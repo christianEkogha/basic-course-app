@@ -40,7 +40,7 @@ public class PartantController {
 	@GetMapping
 	public ResponseEntity<String> getAllPartants() throws JsonProcessingException{
 		List<PartantDTO> partants = partantService.findAll();
-		log.info("Partant a été créée : id = {}", partants);
+		log.info("Partant list : {}", partants);
 		producerService.sendMessage(String.valueOf(mapper.writeValueAsString(partants)));
 		return ResponseEntity.accepted().body(ACCEPTED_MSG);
 	}

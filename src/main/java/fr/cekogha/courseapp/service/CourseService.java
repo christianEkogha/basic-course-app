@@ -28,15 +28,10 @@ public class CourseService {
 
 	private final CourseRepository courseRepository;
 	private final PartantRepository partantRepository;
-	private final KafkaProducer<String, String> kafkaProducer;
-	
-	@Value("${kafka.configs.defaultTopicName}")
-	private String topicName;
 
-	public CourseService(final CourseRepository repository, final PartantRepository partantRepository, final KafkaProducer<String, String> kafkaProducer) {
+	public CourseService(final CourseRepository repository, final PartantRepository partantRepository) {
 		this.courseRepository = repository;
 		this.partantRepository = partantRepository;
-		this.kafkaProducer = kafkaProducer;
 	}
 
 	public List<CourseDTO> findAll() {
@@ -47,18 +42,6 @@ public class CourseService {
 	public Long createCourse(final CourseDTO courseDTO) {
 		Course courseSaved = courseRepository.save(dtoToCourse(courseDTO));
 		return Optional.of(courseSaved.getId()).orElseThrow(RuntimeException::new);
-	}
-	
-	public void sendMessage(final String message) {
-		kafkaProducer.send(
-				new ProducerRecord<>(topicName, message), 
-				(result, exc) -> {
-					if(exc != null)
-						log.error("Unable to send the message = [{}] due to  cause = {}, trace = {}", message, exc.getMessage(), exc.getMessage());
-
-					log.info("Sent message = [{}] with offset = [{}]", message, result.offset());
-				});
-		log.info("message sent : {}", message);
 	}
 
 	public CourseDTO courseToDTO(Course course) {

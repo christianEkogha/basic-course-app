@@ -1,8 +1,8 @@
 package fr.cekogha.courseapp.service;
 
-import org.apache.kafka.clients.producer.KafkaProducer;
-import org.apache.kafka.clients.producer.ProducerRecord;
+import fr.cekogha.courseapp.exception.NotSentException;
 import org.springframework.beans.factory.annotation.Value;
+import org.springframework.kafka.core.KafkaTemplate;
 import org.springframework.stereotype.Service;
 
 import lombok.extern.slf4j.Slf4j;
@@ -11,24 +11,21 @@ import lombok.extern.slf4j.Slf4j;
 @Slf4j
 public class ProducerService {
 
-	private final KafkaProducer<String, String> kafkaProducer;
-	
-	@Value("${kafka.configs.defaultTopicName}")
-	private String topicName;
+    private final KafkaTemplate<String, String> kafkaTemplate;
 
-	public ProducerService(final KafkaProducer<String, String> kafkaProducer) {
-		this.kafkaProducer = kafkaProducer;
-	}
-	
-	public void sendMessage(final String message) {
-		kafkaProducer.send(
-				new ProducerRecord<>(topicName, message), 
-				(result, exc) -> {
-					if(exc != null)
-						log.error("Unable to send the message = [{}] due to  cause = {}, trace = {}", message, exc.getMessage(), exc.getMessage());
+    @Value("${spring.kafka.topic.name}")
+    private String topicName;
 
-					log.info("Sent message = [{}] with offset = [{}]", message, result.offset());
-				});
-		log.info("message sent : {}", message);
-	}
+    public ProducerService(final KafkaTemplate<String, String> kafkaTemplate) {
+        this.kafkaTemplate = kafkaTemplate;
+    }
+
+    public void sendMessage(final String message) {
+        try {
+            kafkaTemplate.send(topicName, message);
+            log.info("message envoyé = [{}]", message);
+        } catch (Exception exception) {
+            throw new NotSentException(String.format("Impossible d'envoyer le message = [%s] cause = %s, trace = %s", message, exception.getCause(), exception.getMessage()));
+        }
+    }
 }
