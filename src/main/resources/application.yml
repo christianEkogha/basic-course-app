@@ -5,16 +5,19 @@ spring:
     password: 
     driverClassName: org.h2.Driver
   jpa:
+    spring.jpa.database-platform: org.hibernate.dialect.H2Dialect
     hibernate.ddl-auto: create-drop
     show-sql: true
+    properties.hibernate.format_sql: true
   h2.console:
     enabled: true
     path: /h2
   kafka:
-    topic.name: course_app.json
     producer:
       bootstrap-servers: localhost:9092
-      key-deserializer: org.apache.kafka.common.serialization.StringDeserializer
-      value-deserializer: org.apache.kafka.common.serialization.StringDeserializer
+      key-serializer: org.apache.kafka.common.serialization.StringSerializer
+      value-serializer: org.apache.kafka.common.serialization.StringSerializer
+      
 server.port: 8082
 
+kafka.configs.defaultTopicName: my_course_app

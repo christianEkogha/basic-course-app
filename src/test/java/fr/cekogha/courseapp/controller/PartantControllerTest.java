@@ -8,16 +8,15 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.autoconfigure.web.servlet.AutoConfigureMockMvc;
 import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.boot.test.context.SpringBootTest.WebEnvironment;
-import org.springframework.http.MediaType;
-import org.springframework.kafka.test.context.EmbeddedKafka;
 import org.springframework.test.context.ActiveProfiles;
 import org.springframework.test.web.servlet.MockMvc;
 import org.springframework.test.web.servlet.request.MockMvcRequestBuilders;
 import org.springframework.test.web.servlet.result.MockMvcResultMatchers;
 
+import fr.cekogha.coursemanager.controller.PartantController;
+
 @SpringBootTest(webEnvironment=WebEnvironment.DEFINED_PORT)
 @AutoConfigureMockMvc
-@EmbeddedKafka(brokerProperties = {"listeners=PLAINTEXT://localhost:9094"})
 @ActiveProfiles("test")
 class PartantControllerTest {
 
@@ -33,22 +32,23 @@ class PartantControllerTest {
 	}
 	
 	@Test
-	@DisplayName("Avec aucun argument - get all Partants - accepted")
-	void givenNoArgs_whenGetAllPartants_thenReturnIsAccepted() throws Exception {
-		mockMvc.perform(MockMvcRequestBuilders.get("/api/partants"))
+	@DisplayName("Avec aucun argument - get all Partants - ok")
+	void givenNoArgs_whenGetAllPartants_thenReturnIsOk() throws Exception {
+		mockMvc.perform(MockMvcRequestBuilders.get("/api/Partants"))
 		.andExpect(MockMvcResultMatchers.status().isAccepted());
 	}
-
+	
 	@Test
-	@DisplayName("Avec Partant dto valid - create Partant - accepted")
-	void givenPartantDTOValid_whenCreatePartant_thenReturnIsAccepted() throws Exception {
-		String bodyPartantDTO = """
-				{
-					"nom" : "create-Partant-is-accepted"
-				}
-				""";
-		mockMvc.perform(MockMvcRequestBuilders.post("/api/partants").content(bodyPartantDTO).contentType(MediaType.APPLICATION_JSON))
-		.andExpect(MockMvcResultMatchers.status().isAccepted());
+	@DisplayName("Avec Partant dto with nom null - create Partant - bad request")
+	void givenAPartantWithId_whenCreatePartant_thenReturnBadRequest() throws Exception {
+		mockMvc.perform(MockMvcRequestBuilders.post("/api/partants"))
+		.andExpect(MockMvcResultMatchers.status().isBadRequest());
 	}
-
+	
+	@Test
+	@DisplayName("Avec Partant dto valid - create Partant - ok")
+	void givenPartantDTOValid_whenCreatePartant_thenReturnIsOk() throws Exception {
+		mockMvc.perform(MockMvcRequestBuilders.post("/api/partants").param("name", "fred"))
+		.andExpect(MockMvcResultMatchers.status().isOk());
+	}
 }
