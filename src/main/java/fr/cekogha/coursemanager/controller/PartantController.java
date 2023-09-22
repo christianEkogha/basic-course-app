@@ -2,6 +2,9 @@ package fr.cekogha.coursemanager.controller;
 
 import java.util.List;
 
+import io.swagger.v3.oas.annotations.Operation;
+import io.swagger.v3.oas.annotations.responses.ApiResponse;
+import io.swagger.v3.oas.annotations.responses.ApiResponses;
 import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.GetMapping;
@@ -38,6 +41,11 @@ public class PartantController {
 		this.mapper = mapper;
 	}
 
+	@Operation(summary = "Get all partants")
+	@ApiResponses(value = {
+			@ApiResponse(responseCode = "200", description = "Partant list has been retrieved successfully"),
+			@ApiResponse(responseCode = "500", description = "Technical exception")
+	})
 	@GetMapping
 	public ResponseEntity<String> getAllPartants() throws JsonProcessingException {
 			List<Partant> partants = partantService.findAll();
@@ -46,6 +54,12 @@ public class PartantController {
 		return ResponseEntity.ok(RETURN_MSG);
 	}
 
+	@Operation(summary = "create a partant")
+	@ApiResponses(value = {
+			@ApiResponse(responseCode = "200", description = "Partant has been created successfully"),
+			@ApiResponse(responseCode = "400", description = "business exception - invalid argument"),
+			@ApiResponse(responseCode = "500", description = "Technical exception")
+	})
 	@PostMapping
 	public ResponseEntity<String> creerPartant(@RequestParam("name") @Valid String nom) throws JsonProcessingException {
 		Partant newPartant = partantService.createPartant(nom);

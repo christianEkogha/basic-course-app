@@ -1,63 +1,49 @@
 package fr.cekogha.coursemanager.service;
 
-import java.time.Duration;
-
+import fr.cekogha.coursemanager.KafkaTestConsumer;
 import org.apache.kafka.clients.consumer.ConsumerRecords;
 import org.apache.kafka.clients.consumer.KafkaConsumer;
 import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.api.Test;
-import org.junit.runner.RunWith;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
+import org.springframework.boot.test.autoconfigure.web.servlet.AutoConfigureMockMvc;
 import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.kafka.core.KafkaTemplate;
-import org.springframework.test.annotation.DirtiesContext;
+import org.springframework.kafka.test.context.EmbeddedKafka;
 import org.springframework.test.context.ActiveProfiles;
 import org.springframework.test.context.DynamicPropertyRegistry;
 import org.springframework.test.context.DynamicPropertySource;
-import org.springframework.test.context.junit4.SpringRunner;
 import org.testcontainers.containers.KafkaContainer;
 import org.testcontainers.junit.jupiter.Container;
-import org.testcontainers.junit.jupiter.Testcontainers;
 import org.testcontainers.utility.DockerImageName;
 
-@RunWith(SpringRunner.class)
-@DirtiesContext
-@SpringBootTest
+import java.time.Duration;
+import java.util.concurrent.TimeUnit;
+
+import static org.hamcrest.MatcherAssert.assertThat;
+import static org.hamcrest.Matchers.containsString;
+import static org.junit.jupiter.api.Assertions.assertTrue;
+
+@SpringBootTest(webEnvironment= SpringBootTest.WebEnvironment.DEFINED_PORT)
+@AutoConfigureMockMvc
+@EmbeddedKafka(brokerProperties = {"listeners=PLAINTEXT://localhost:9094"}, partitions = 1)
 @ActiveProfiles("test")
-@Testcontainers
 class ProducerServiceTest {
 
-	@Container
-	static final KafkaContainer kafka = new KafkaContainer(DockerImageName.parse("confluentinc/cp-kafka:5.4.3"));
-
-	@DynamicPropertySource
-	static void overrideProperties(DynamicPropertyRegistry registry) {
-		System.out.println("!!!!!!!!!!!!!!! " + kafka.getBootstrapServers());
-		registry.add("spring.kafka.bootstrap-servers", kafka::getBootstrapServers);
-	}
-
-	@Value("${spring.kafka.bootstrap-servers}")
-	private String bootstrapServers;
-	
-	@Autowired
-	private KafkaTemplate<String, String> kafkaTemplate;
-	
 	@Autowired
 	private ProducerService producerService;
 
     @Autowired
-    private KafkaConsumer<String, String> consumer;
+    private KafkaTestConsumer consumer;
 
 	@Test
-	void givenContent_whenSendMessage_thenMessageSent() {
+	void givenContent_whenSendMessage_thenMessageSent() throws InterruptedException {
 		
 		producerService.sendMessage("message produced");
 
-        ConsumerRecords<String, String> records = consumer.poll(Duration.ofMinutes(2));
-        Assertions.assertNotNull(records);
-        records.forEach(rcd -> {
-            Assertions.assertTrue(rcd.value().contains("message produced"));
-        });
+		boolean messageConsumed = consumer.getLatch().await(3, TimeUnit.SECONDS);
+		assertTrue(messageConsumed);
+		assertThat(consumer.getPayload(), containsString("message produced"));
 	}
 }

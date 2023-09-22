@@ -10,13 +10,11 @@ spring:
     enabled: true
     path: /h2
   kafka:
-    bootstrap-servers: [PLAINTEXT://localhost:9094]
     producer:
       bootstrap-servers: localhost:9094
       key-serializer: org.apache.kafka.common.serialization.StringSerializer
       value-serializer: org.apache.kafka.common.serialization.StringSerializer
     consumer:
-      bootstrap-servers: localhost:9094
       key-serializer: org.apache.kafka.common.serialization.StringSerializer
       value-serializer: org.apache.kafka.common.serialization.StringSerializer
       group-id: my-group

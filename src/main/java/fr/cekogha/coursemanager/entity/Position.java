@@ -17,6 +17,7 @@ import lombok.Setter;
 @NoArgsConstructor
 public class Position {
     @EmbeddedId
+    @JsonIgnore
     private PositionKey pk = new PositionKey();
     
     @ManyToOne

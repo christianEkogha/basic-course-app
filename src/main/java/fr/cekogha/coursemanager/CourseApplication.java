@@ -3,6 +3,7 @@ package fr.cekogha.coursemanager;
 import java.util.List;
 import java.util.stream.Stream;
 
+import org.apache.kafka.clients.admin.NewTopic;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.boot.SpringApplication;
 import org.springframework.boot.autoconfigure.SpringBootApplication;
@@ -10,6 +11,8 @@ import org.springframework.context.ConfigurableApplicationContext;
 
 import fr.cekogha.coursemanager.entity.Partant;
 import fr.cekogha.coursemanager.repository.PartantRepository;
+import org.springframework.context.annotation.Bean;
+import org.springframework.kafka.config.TopicBuilder;
 
 @SpringBootApplication
 public class CourseApplication {
@@ -32,9 +35,9 @@ public class CourseApplication {
 
 	}
 
-//	@Bean
-//	public NewTopic courseAppTopic() {
-//		NewTopic topic = TopicBuilder.name(defaultTopicName).build();
-//		return topic;
-//	}
+	@Bean
+	public NewTopic courseAppTopic() {
+		NewTopic topic = TopicBuilder.name(defaultTopicName).build();
+		return topic;
+	}
 }

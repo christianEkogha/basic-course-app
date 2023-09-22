@@ -25,7 +25,8 @@ public class ProducerService {
 			kafkaTemplate.send(topicName, message);
 			log.info("message sent : {}", message);
 		} catch (NotSentException exception) {
-			throw new NotSentException(exception.getMessage());
+			throw new NotSentException(String.format("Impossible d'envoyer le message = [%s] cause = %s, trace = %s", message, exception.getCause(), exception.getMessage()));
+
 		}
 	}
 }
