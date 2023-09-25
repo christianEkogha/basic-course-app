@@ -11,22 +11,26 @@ import lombok.extern.slf4j.Slf4j;
 @Slf4j
 public class ProducerService {
 
-	private final KafkaTemplate<String, String> kafkaTemplate;
+    private final KafkaTemplate<String, String> kafkaTemplate;
 
-	@Value("${kafka.configs.defaultTopicName}")
-	private String topicName;
+    @Value("${kafka.configs.defaultTopicName}")
+    private String topicName;
 
-	public ProducerService(final KafkaTemplate<String, String> kafkaTemplate) {
-		this.kafkaTemplate = kafkaTemplate;
-	}
+    public ProducerService(final KafkaTemplate<String, String> kafkaTemplate) {
+        this.kafkaTemplate = kafkaTemplate;
+    }
 
-	public void sendMessage(final String message) {
-		try {
-			kafkaTemplate.send(topicName, message);
-			log.info("message sent : {}", message);
-		} catch (NotSentException exception) {
-			throw new NotSentException(String.format("Impossible d'envoyer le message = [%s] cause = %s, trace = %s", message, exception.getCause(), exception.getMessage()));
+    public void sendMessage(final String message) {
+        try {
+            kafkaTemplate.send(topicName, message).handle((result, exception) -> {
+                if (exception != null)
+                    return exception;
 
-		}
-	}
+                log.info("message sent : {}", message);
+                return message;
+            });
+        } catch (Exception exception) {
+            throw new NotSentException(String.format("Impossible d'envoyer le message = [%s] cause = %s, trace = %s", message, exception.getCause(), exception.getMessage()));
+        }
+    }
 }

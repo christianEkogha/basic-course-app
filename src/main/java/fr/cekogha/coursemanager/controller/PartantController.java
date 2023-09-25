@@ -43,8 +43,7 @@ public class PartantController {
 
 	@Operation(summary = "Get all partants")
 	@ApiResponses(value = {
-			@ApiResponse(responseCode = "200", description = "Partant list has been retrieved successfully"),
-			@ApiResponse(responseCode = "500", description = "Technical exception")
+			@ApiResponse(responseCode = "200", description = "Partant list has been retrieved successfully")
 	})
 	@GetMapping
 	public ResponseEntity<String> getAllPartants() throws JsonProcessingException {
@@ -56,9 +55,7 @@ public class PartantController {
 
 	@Operation(summary = "create a partant")
 	@ApiResponses(value = {
-			@ApiResponse(responseCode = "200", description = "Partant has been created successfully"),
-			@ApiResponse(responseCode = "400", description = "business exception - invalid argument"),
-			@ApiResponse(responseCode = "500", description = "Technical exception")
+			@ApiResponse(responseCode = "200", description = "Partant has been created successfully")
 	})
 	@PostMapping
 	public ResponseEntity<String> creerPartant(@RequestParam("name") @Valid String nom) throws JsonProcessingException {

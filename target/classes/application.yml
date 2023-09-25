@@ -25,6 +25,6 @@ server.port: 8082
 springdoc.api-docs.path: /api-docs
 
 application:
-  title: @project.name@
-  description: @project.description@
-  version: @project.version@
+  title: Course App
+  description: PMU exercice technique
+  version: 0.0.1-SNAPSHOT

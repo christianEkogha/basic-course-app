@@ -19,7 +19,7 @@ import java.util.List;
 
 @RestController
 @CrossOrigin
-@RequestMapping(value = "/api/courses", produces = MediaType.APPLICATION_JSON_VALUE)
+@RequestMapping(value = "/api/courses")
 @Slf4j
 public class CourseController {
 
@@ -39,8 +39,7 @@ public class CourseController {
 
 	@Operation(summary = "Get all courses")
     @ApiResponses(value = {
-            @ApiResponse(responseCode = "200", description = "Course list has been retrieved successfully"),
-            @ApiResponse(responseCode = "500", description = "Technical exception")
+            @ApiResponse(responseCode = "200", description = "Course list has been retrieved successfully")
     })
     @GetMapping
     public ResponseEntity<String> getAllCourses() throws JsonProcessingException {
@@ -52,12 +51,9 @@ public class CourseController {
 
 	@Operation(summary = "Create a course")
 	@ApiResponses(value = {
-			@ApiResponse(responseCode = "200", description = "Course has been created successfully"),
-			@ApiResponse(responseCode = "400", description = "business exception - invalid argument"),
-			@ApiResponse(responseCode = "404", description = "resource Not found"),
-			@ApiResponse(responseCode = "500", description = "Technical exception")
+			@ApiResponse(responseCode = "200", description = "Course has been created successfully")
 	})
-    @PostMapping
+    @PostMapping(consumes = MediaType.APPLICATION_JSON_VALUE)
     public ResponseEntity<?> saveCustomer(@RequestBody @Valid CourseDTO courseDto) throws JsonProcessingException {
         Course newCourse = courseService.saveCourse(courseDto);
         log.info("Course has been created  : {}", newCourse);

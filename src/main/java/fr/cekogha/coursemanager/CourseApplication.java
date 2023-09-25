@@ -1,20 +1,22 @@
 package fr.cekogha.coursemanager;
 
-import java.util.List;
-import java.util.stream.Stream;
-
+import fr.cekogha.coursemanager.entity.Partant;
+import fr.cekogha.coursemanager.repository.PartantRepository;
+import io.swagger.v3.oas.annotations.OpenAPIDefinition;
+import io.swagger.v3.oas.annotations.info.Info;
 import org.apache.kafka.clients.admin.NewTopic;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.boot.SpringApplication;
 import org.springframework.boot.autoconfigure.SpringBootApplication;
 import org.springframework.context.ConfigurableApplicationContext;
-
-import fr.cekogha.coursemanager.entity.Partant;
-import fr.cekogha.coursemanager.repository.PartantRepository;
 import org.springframework.context.annotation.Bean;
 import org.springframework.kafka.config.TopicBuilder;
 
+import java.util.List;
+import java.util.stream.Stream;
+
 @SpringBootApplication
+@OpenAPIDefinition(info=@Info(title = "${application.title}", version = "${application.version}", description = "${application.description}"))
 public class CourseApplication {
 
 	@Value("${kafka.configs.defaultTopicName}")

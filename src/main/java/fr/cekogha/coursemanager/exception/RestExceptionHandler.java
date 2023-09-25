@@ -21,6 +21,7 @@ import jakarta.validation.ConstraintViolationException;
 public class RestExceptionHandler {
 
     @ExceptionHandler(NotFoundException.class)
+    @ApiResponse(responseCode = "404", description = "Resource not found")
     public ResponseEntity<ErrorResponse> handleNotFoundException(final NotFoundException exception) {
         final ErrorResponse errorResponse = new ErrorResponse();
         errorResponse.setHttpStatus(HttpStatus.NOT_FOUND.value());
@@ -30,6 +31,7 @@ public class RestExceptionHandler {
     }
     
     @ExceptionHandler(NotSentException.class)
+    @ApiResponse(responseCode = "500", description = "Unable to send message to the kafka topic")
     public ResponseEntity<ErrorResponse> handleNotSentException(final NotFoundException exception) {
         final ErrorResponse errorResponse = new ErrorResponse();
         errorResponse.setHttpStatus(HttpStatus.INTERNAL_SERVER_ERROR.value());
@@ -39,6 +41,7 @@ public class RestExceptionHandler {
     }
 
     @ExceptionHandler(ConstraintViolationException.class)
+    @ApiResponse(responseCode = "400", description = "business exception - invalid argument")
     public ResponseEntity<ErrorResponse> handleConstraintViolationException(
             final ConstraintViolationException exception) {
         final Set<ConstraintViolation<?>> violations = exception.getConstraintViolations();
@@ -60,6 +63,7 @@ public class RestExceptionHandler {
     }
     
     @ExceptionHandler(MethodArgumentNotValidException.class)
+    @ApiResponse(responseCode = "400", description = "business exception - invalid argument")
     public ResponseEntity<ErrorResponse> handleMethodArgumentNotValid(
             final MethodArgumentNotValidException exception) {
         final BindingResult bindingResult = exception.getBindingResult();
@@ -91,7 +95,7 @@ public class RestExceptionHandler {
     }
 
     @ExceptionHandler(Throwable.class)
-    @ApiResponse(responseCode = "4xx/5xx", description = "Error")
+    @ApiResponse(responseCode = "500", description = "Technical exception - default error")
     public ResponseEntity<ErrorResponse> handleThrowable(final Throwable exception) {
         exception.printStackTrace();
         final ErrorResponse errorResponse = new ErrorResponse();

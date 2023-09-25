@@ -1,5 +1,6 @@
 package fr.cekogha.coursemanager.controller;
 
+import fr.cekogha.coursemanager.EmbeddedKafkaTestConfig;
 import fr.cekogha.coursemanager.controller.PartantController;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
@@ -15,11 +16,8 @@ import org.springframework.test.web.servlet.result.MockMvcResultMatchers;
 
 import static org.assertj.core.api.Assertions.assertThat;
 
-@SpringBootTest(webEnvironment=WebEnvironment.DEFINED_PORT)
 @AutoConfigureMockMvc
-@EmbeddedKafka(brokerProperties = {"listeners=PLAINTEXT://localhost:9094"}, partitions = 1)
-@ActiveProfiles("test")
-class PartantControllerTest {
+class PartantControllerTest extends EmbeddedKafkaTestConfig {
 
 	@Autowired
 	MockMvc mockMvc;

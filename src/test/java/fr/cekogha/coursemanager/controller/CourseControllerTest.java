@@ -2,6 +2,9 @@ package fr.cekogha.coursemanager.controller;
 
 import static org.assertj.core.api.Assertions.assertThat;
 
+import fr.cekogha.coursemanager.EmbeddedKafkaTestConfig;
+import fr.cekogha.coursemanager.service.ProducerService;
+import org.junit.jupiter.api.AfterAll;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -10,6 +13,7 @@ import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.boot.test.context.SpringBootTest.WebEnvironment;
 import org.springframework.http.MediaType;
 import org.springframework.kafka.core.KafkaTemplate;
+import org.springframework.kafka.test.EmbeddedKafkaBroker;
 import org.springframework.kafka.test.context.EmbeddedKafka;
 import org.springframework.test.annotation.DirtiesContext;
 import org.springframework.test.context.ActiveProfiles;
@@ -19,11 +23,8 @@ import org.springframework.test.web.servlet.result.MockMvcResultMatchers;
 
 import fr.cekogha.coursemanager.controller.CourseController;
 
-@SpringBootTest(webEnvironment = WebEnvironment.DEFINED_PORT)
-@AutoConfigureMockMvc()
-@EmbeddedKafka(brokerProperties = {"listeners=PLAINTEXT://localhost:9094"}, partitions = 1)
-@ActiveProfiles("test")
-class CourseControllerTest {
+@AutoConfigureMockMvc
+class CourseControllerTest extends EmbeddedKafkaTestConfig {
 
     @Autowired
     MockMvc mockMvc;
@@ -102,5 +103,4 @@ class CourseControllerTest {
                 }""";
         mockMvc.perform(MockMvcRequestBuilders.post("/api/courses").content(bodyCourseDTO).contentType(MediaType.APPLICATION_JSON)).andExpect(MockMvcResultMatchers.status().isOk());
     }
-
 }
