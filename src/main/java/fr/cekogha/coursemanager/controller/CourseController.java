@@ -3,6 +3,8 @@ package fr.cekogha.coursemanager.controller;
 import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import fr.cekogha.coursemanager.dto.CourseDTO;
+import fr.cekogha.coursemanager.dto.EventDTO;
+import fr.cekogha.coursemanager.dto.EventType;
 import fr.cekogha.coursemanager.entity.Course;
 import fr.cekogha.coursemanager.service.CourseService;
 import fr.cekogha.coursemanager.service.ProducerService;
@@ -15,7 +17,10 @@ import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
+import java.time.LocalDateTime;
+import java.util.ArrayList;
 import java.util.List;
+import java.util.stream.Stream;
 
 @RestController
 @CrossOrigin
@@ -45,7 +50,8 @@ public class CourseController {
     public ResponseEntity<String> getAllCourses() throws JsonProcessingException {
         List<Course> courses = courseService.findAll();
         log.info("Course list  : {}", courses);
-        producerService.sendMessage(String.valueOf(mapper.writeValueAsString(courses)));
+        EventDTO eventDTO = new EventDTO(EventType.Course, courses, LocalDateTime.now());
+        producerService.sendMessage(String.valueOf(mapper.writeValueAsString(eventDTO)));
         return ResponseEntity.ok(RETURN_MSG);
     }
 
@@ -57,6 +63,7 @@ public class CourseController {
     public ResponseEntity<?> saveCustomer(@RequestBody @Valid CourseDTO courseDto) throws JsonProcessingException {
         Course newCourse = courseService.saveCourse(courseDto);
         log.info("Course has been created  : {}", newCourse);
+        EventDTO eventDTO = new EventDTO(EventType.Course, Stream.of(newCourse).toList(), LocalDateTime.now());
         producerService.sendMessage(String.valueOf(mapper.writeValueAsString(newCourse)));
         return ResponseEntity.ok(RETURN_MSG);
     }

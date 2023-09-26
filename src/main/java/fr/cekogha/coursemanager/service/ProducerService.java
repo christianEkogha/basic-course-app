@@ -20,17 +20,17 @@ public class ProducerService {
         this.kafkaTemplate = kafkaTemplate;
     }
 
-    public void sendMessage(final String message) {
+    public void sendMessage(final String eventDto) {
         try {
-            kafkaTemplate.send(topicName, message).handle((result, exception) -> {
+            kafkaTemplate.send(topicName, eventDto).handle((result, exception) -> {
                 if (exception != null)
                     return exception;
 
-                log.info("message sent : {}", message);
-                return message;
+                log.info("message sent : {}", eventDto);
+                return eventDto;
             });
         } catch (Exception exception) {
-            throw new NotSentException(String.format("Impossible d'envoyer le message = [%s] cause = %s, trace = %s", message, exception.getCause(), exception.getMessage()));
+            throw new NotSentException(String.format("Impossible d'envoyer le message = [%s] cause = %s, trace = %s", eventDto, exception.getCause(), exception.getMessage()));
         }
     }
 }

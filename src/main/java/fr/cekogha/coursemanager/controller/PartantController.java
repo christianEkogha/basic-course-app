@@ -1,26 +1,24 @@
 package fr.cekogha.coursemanager.controller;
 
-import java.util.List;
-
-import io.swagger.v3.oas.annotations.Operation;
-import io.swagger.v3.oas.annotations.responses.ApiResponse;
-import io.swagger.v3.oas.annotations.responses.ApiResponses;
-import org.springframework.http.MediaType;
-import org.springframework.http.ResponseEntity;
-import org.springframework.web.bind.annotation.GetMapping;
-import org.springframework.web.bind.annotation.PostMapping;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RequestParam;
-import org.springframework.web.bind.annotation.RestController;
-
 import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.databind.ObjectMapper;
-
+import fr.cekogha.coursemanager.dto.EventDTO;
+import fr.cekogha.coursemanager.dto.EventType;
 import fr.cekogha.coursemanager.entity.Partant;
 import fr.cekogha.coursemanager.service.PartantService;
 import fr.cekogha.coursemanager.service.ProducerService;
+import io.swagger.v3.oas.annotations.Operation;
+import io.swagger.v3.oas.annotations.responses.ApiResponse;
+import io.swagger.v3.oas.annotations.responses.ApiResponses;
 import jakarta.validation.Valid;
 import lombok.extern.log4j.Log4j2;
+import org.springframework.http.MediaType;
+import org.springframework.http.ResponseEntity;
+import org.springframework.web.bind.annotation.*;
+
+import java.time.LocalDateTime;
+import java.util.List;
+import java.util.stream.Stream;
 
 @RestController
 @RequestMapping(value = "/api/partants", produces = MediaType.APPLICATION_JSON_VALUE)
@@ -49,7 +47,8 @@ public class PartantController {
 	public ResponseEntity<String> getAllPartants() throws JsonProcessingException {
 			List<Partant> partants = partantService.findAll();
 		log.info("Partant has been created : id = {}", partants);
-		producerService.sendMessage(mapper.writeValueAsString(partants));
+		EventDTO eventDTO = new EventDTO(EventType.Partant, partants, LocalDateTime.now());
+		producerService.sendMessage(mapper.writeValueAsString(eventDTO));
 		return ResponseEntity.ok(RETURN_MSG);
 	}
 
@@ -61,7 +60,8 @@ public class PartantController {
 	public ResponseEntity<String> creerPartant(@RequestParam("name") @Valid String nom) throws JsonProcessingException {
 		Partant newPartant = partantService.createPartant(nom);
 		log.info("Partant has been created : id = {}", newPartant);
-		producerService.sendMessage(mapper.writeValueAsString(newPartant));
+		EventDTO eventDTO = new EventDTO(EventType.Partant, Stream.of(newPartant).toList(), LocalDateTime.now());
+		producerService.sendMessage(mapper.writeValueAsString(eventDTO));
 		return ResponseEntity.ok(RETURN_MSG);
 	}
 }
