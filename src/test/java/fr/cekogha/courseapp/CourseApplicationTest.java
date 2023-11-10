@@ -13,8 +13,8 @@ class CourseApplicationTest {
  @Autowired
  private CourseApplication application;
 
- /**
- * Test the spring context initialization
+/**
+ *Test the spring context initialization
  */
  @Test
  void test() {
