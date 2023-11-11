@@ -1,7 +1,7 @@
 package fr.cekogha.courseapp.exception;
 
+import io.swagger.v3.oas.annotations.responses.ApiResponse;
 import java.util.List;
-
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.validation.BindingResult;
@@ -11,13 +11,19 @@ import org.springframework.web.bind.annotation.RestController;
 import org.springframework.web.bind.annotation.RestControllerAdvice;
 import org.springframework.web.server.ResponseStatusException;
 
-import io.swagger.v3.oas.annotations.responses.ApiResponse;
-
-
+/**
+ * The type Rest exception handler.
+ */
 @RestControllerAdvice(annotations = RestController.class)
 public class RestExceptionHandler {
 
-    @ExceptionHandler(NotFoundException.class)
+    /**
+     * Handle not found response entity.
+     *
+     * @param exception the exception
+     * @return the response entity
+     */
+@ExceptionHandler(NotFoundException.class)
     public ResponseEntity<ErrorResponse> handleNotFound(final NotFoundException exception) {
         final ErrorResponse errorResponse = new ErrorResponse();
         errorResponse.setHttpStatus(HttpStatus.NOT_FOUND.value());
@@ -26,7 +32,13 @@ public class RestExceptionHandler {
         return new ResponseEntity<>(errorResponse, HttpStatus.NOT_FOUND);
     }
     
-    @ExceptionHandler(MethodArgumentNotValidException.class)
+    /**
+     * Handle method argument not valid response entity.
+     *
+     * @param exception the exception
+     * @return the response entity
+     */
+@ExceptionHandler(MethodArgumentNotValidException.class)
     public ResponseEntity<ErrorResponse> handleMethodArgumentNotValid(
             final MethodArgumentNotValidException exception) {
         final BindingResult bindingResult = exception.getBindingResult();
@@ -47,7 +59,13 @@ public class RestExceptionHandler {
         return new ResponseEntity<>(errorResponse, HttpStatus.BAD_REQUEST);
     }
 
-    @ExceptionHandler(ResponseStatusException.class)
+    /**
+     * Handle response status response entity.
+     *
+     * @param exception the exception
+     * @return the response entity
+     */
+@ExceptionHandler(ResponseStatusException.class)
     public ResponseEntity<ErrorResponse> handleResponseStatus(
             final ResponseStatusException exception) {
         final ErrorResponse errorResponse = new ErrorResponse();
@@ -57,7 +75,13 @@ public class RestExceptionHandler {
         return new ResponseEntity<>(errorResponse, exception.getStatusCode());
     }
 
-    @ExceptionHandler(Throwable.class)
+    /**
+     * Handle throwable response entity.
+     *
+     * @param exception the exception
+     * @return the response entity
+     */
+@ExceptionHandler(Throwable.class)
     @ApiResponse(responseCode = "4xx/5xx", description = "Error")
     public ResponseEntity<ErrorResponse> handleThrowable(final Throwable exception) {
         exception.printStackTrace();
