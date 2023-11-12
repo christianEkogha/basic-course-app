@@ -11,16 +11,17 @@ import lombok.Getter;
 import lombok.Setter;
 import lombok.ToString;
 
+/** The type Course dto. */
 @Getter
 @Setter
 @ToString
 public class CourseDTO {
-	@Digits(integer = 100, fraction = 0)
-	private long numero;
-	@NotBlank
-	private String nom; 
-	@FutureOrPresent
-	private LocalDate jour; 
-	@Size(min=3, message="Au moins de 3 partants requis")
-	private Set<Long> partantIds;
+  @Digits(integer = 100, fraction = 0)
+  private long numero;
+
+  @NotBlank private String nom;
+  @FutureOrPresent private LocalDate jour;
+
+  @Size(min = 3, message = "Au moins de 3 partants requis")
+  private Set<Long> partantIds;
 }

@@ -1,9 +1,17 @@
 package fr.cekogha.courseapp.repository;
 
+import fr.cekogha.courseapp.entity.Partant;
 import org.springframework.data.jpa.repository.JpaRepository;
 
-import fr.cekogha.courseapp.entity.Partant;
-
+/**
+ * The interface Partant repository.
+ */
 public interface PartantRepository extends JpaRepository<Partant, Long> {
-    boolean existsByNomIgnoreCase(String nom);
+    /**
+     * Exists by nom ignore case boolean.
+     *
+     * @param nom the nom
+     * @return the boolean
+     */
+boolean existsByNomIgnoreCase(String nom);
 }

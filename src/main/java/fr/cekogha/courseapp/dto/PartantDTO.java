@@ -1,14 +1,14 @@
 package fr.cekogha.courseapp.dto;
 
-import java.util.Set;
-
 import jakarta.validation.constraints.Digits;
 import jakarta.validation.constraints.NotBlank;
 import jakarta.validation.constraints.Size;
+import java.util.Set;
 import lombok.Getter;
 import lombok.Setter;
 import lombok.ToString;
 
+/** The type Partant dto. */
 @Getter
 @Setter
 @ToString

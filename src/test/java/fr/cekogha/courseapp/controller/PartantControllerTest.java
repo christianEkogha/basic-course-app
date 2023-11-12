@@ -15,40 +15,60 @@ import org.springframework.test.web.servlet.MockMvc;
 import org.springframework.test.web.servlet.request.MockMvcRequestBuilders;
 import org.springframework.test.web.servlet.result.MockMvcResultMatchers;
 
-@SpringBootTest(webEnvironment=WebEnvironment.DEFINED_PORT)
+/** The type Partant controller test. */
+@SpringBootTest(webEnvironment = WebEnvironment.DEFINED_PORT)
 @AutoConfigureMockMvc
 @EmbeddedKafka(brokerProperties = {"listeners=PLAINTEXT://localhost:9094"})
 @ActiveProfiles("test")
 class PartantControllerTest {
 
-	@Autowired
-	MockMvc mockMvc;
-	
-	@Autowired
-	PartantController controller;
+  /** The Mock mvc. */
+  @Autowired MockMvc mockMvc;
 
-	@Test
-	void initControllerTest() throws Exception {
-		assertThat(controller).isNotNull();
-	}
-	
-	@Test
-	@DisplayName("Avec aucun argument - get all Partants - accepted")
-	void givenNoArgs_whenGetAllPartants_thenReturnIsAccepted() throws Exception {
-		mockMvc.perform(MockMvcRequestBuilders.get("/api/partants"))
-		.andExpect(MockMvcResultMatchers.status().isAccepted());
-	}
+  /** The Controller. */
+  @Autowired PartantController controller;
 
-	@Test
-	@DisplayName("Avec Partant dto valid - create Partant - accepted")
-	void givenPartantDTOValid_whenCreatePartant_thenReturnIsAccepted() throws Exception {
-		String bodyPartantDTO = """
+  /**
+   * Init controller test.
+   *
+   * @throws Exception the exception
+   */
+  @Test
+  void initControllerTest() throws Exception {
+    assertThat(controller).isNotNull();
+  }
+
+  /**
+   * Given no args when get all partants then return is accepted.
+   *
+   * @throws Exception the exception
+   */
+  @Test
+  @DisplayName("Avec aucun argument - get all Partants - accepted")
+  void givenNoArgs_whenGetAllPartants_thenReturnIsAccepted() throws Exception {
+    mockMvc
+        .perform(MockMvcRequestBuilders.get("/api/partants"))
+        .andExpect(MockMvcResultMatchers.status().isAccepted());
+  }
+
+  /**
+   * Given partant dto valid when create partant then return is accepted.
+   *
+   * @throws Exception the exception
+   */
+  @Test
+  @DisplayName("Avec Partant dto valid - create Partant - accepted")
+  void givenPartantDTOValid_whenCreatePartant_thenReturnIsAccepted() throws Exception {
+    String bodyPartantDTO = """
 				{
 					"nom" : "create-Partant-is-accepted"
 				}
 				""";
-		mockMvc.perform(MockMvcRequestBuilders.post("/api/partants").content(bodyPartantDTO).contentType(MediaType.APPLICATION_JSON))
-		.andExpect(MockMvcResultMatchers.status().isAccepted());
-	}
-
+    mockMvc
+        .perform(
+            MockMvcRequestBuilders.post("/api/partants")
+                .content(bodyPartantDTO)
+                .contentType(MediaType.APPLICATION_JSON))
+        .andExpect(MockMvcResultMatchers.status().isAccepted());
+  }
 }

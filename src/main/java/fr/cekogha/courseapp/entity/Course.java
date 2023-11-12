@@ -18,35 +18,36 @@ import lombok.EqualsAndHashCode;
 import lombok.Getter;
 import lombok.Setter;
 
+/** The type Course. */
 @Entity
 @EntityListeners(AuditingEntityListener.class)
 @Getter
 @Setter
-@Table(name="Course")
+@Table(name = "Course")
 @EqualsAndHashCode(of = {"id"})
 public class Course {
 
-    @Id
-    @Column(nullable = false, updatable = false)
-    private Long id;
+  @Id
+  @Column(nullable = false, updatable = false)
+  private Long id;
 
-    @Column
-    private LocalDate jour;
+  @Column private LocalDate jour;
 
-    @Column
-    private String nom;
-    
-    @ManyToMany
-    @JoinTable(
-            name = "course_partant",
-            joinColumns = @JoinColumn(name = "course_id"),
-            inverseJoinColumns = @JoinColumn(name = "partant_id")
-    )
-    private Set<Partant> partants = new HashSet<>();
-    
-    public void ajoutPartant(Partant partant) {
-    	partants.add(partant);
-    }
-    
-    
+  @Column private String nom;
+
+  @ManyToMany
+  @JoinTable(
+      name = "course_partant",
+      joinColumns = @JoinColumn(name = "course_id"),
+      inverseJoinColumns = @JoinColumn(name = "partant_id"))
+  private Set<Partant> partants = new HashSet<>();
+
+  /**
+   * Ajout partant.
+   *
+   * @param partant the partant
+   */
+  public void ajoutPartant(Partant partant) {
+    partants.add(partant);
+  }
 }
